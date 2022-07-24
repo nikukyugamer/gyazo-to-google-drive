@@ -1,0 +1,41 @@
+name: Gyazo の画像を Google Drive にコピーする
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  gyazo_to_google_drive:
+    name: Gyazo の画像を Google Drive へ
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['18.x']
+    env:
+      CI: true
+    steps:
+    - name: コードをチェックアウトする
+      uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: yarn
+    - name: Rclone をインストールする
+      run: |
+        curl https://rclone.org/install.sh | sudo bash
+    - name: コマンドチェック (which wget)
+      run: |
+        which wget
+    - name: コマンドチェック (which rclone)
+      run: |
+        which rclone
+    - name: ディレクトリチェック (ls downloaded_images)
+      run: |
+        ls -la downloaded_images
+    - name: 'TODO: rclone.conf を作る'
+      run: |
+        echo 'rclone.conf を作る'
+    - name: 'TODO: Rclone を実行する'
+      run: |
+        echo 'rclone copy ./downloaded_images google_drive:/Gyazo'
