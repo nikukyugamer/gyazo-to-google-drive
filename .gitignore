@@ -1,3 +1,6 @@
+downloaded_images/*
+!downloaded_images/.keep
+
 # Logs
 logs
 *.log
