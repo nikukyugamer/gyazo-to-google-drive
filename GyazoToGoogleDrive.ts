@@ -1,6 +1,7 @@
 // @ts-ignore
 import Gyazo from 'gyazo-api'
 import url from 'url'
+import { format } from 'date-fns'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -8,8 +9,9 @@ const client = new Gyazo(process.env.GYAZO_ACCESS_TOKEN)
 const { execSync } = require('child_process')
 
 type DownloadedFile = {
-  url: string
+  itemUrl: string
   imageId: string
+  getListedAt: Date
 }
 
 class GyazoToGoogleDrive {
@@ -22,11 +24,11 @@ class GyazoToGoogleDrive {
       const downloadedFiles: DownloadedFile[] = []
 
       res.data.forEach((item: any) => {
-        // TODO: created_at を含めて、ファイル名に日時情報を追加したい
         downloadedFiles.push(
           {
-            url: item.url,
-            imageId: item.image_id // TODO: ファイル名やメタデータに使う予定だが、不要かもしれない
+            itemUrl: item.url,
+            imageId: item.image_id, // ファイル名やメタデータに使う予定だが、不要かもしれない（拡張子が含まれていない）
+            getListedAt: new Date()
           }
         )
       })
@@ -35,13 +37,19 @@ class GyazoToGoogleDrive {
     })
     .then((downloadedFiles: DownloadedFile[]) => {
       downloadedFiles.forEach((DownloadedFile: DownloadedFile) => {
-        const parsedUrl = url.parse(DownloadedFile.url)
-        const downloadedFileLocalPath = `downloaded_images/${parsedUrl.pathname}`
-        const downloadedFileRemotePath = DownloadedFile.url
+        const parsedUrl = url.parse(DownloadedFile.itemUrl)
+        const pathname = parsedUrl.pathname || ''
+        const filename = pathname.split('/').pop()
+        const downloadedFileLocalPath = `downloaded_images/${format(DownloadedFile.getListedAt, 'yyyyMMdd_HHmmss')}_${filename}`
+        const downloadedFileRemotePath = DownloadedFile.itemUrl
 
         const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
 
-        execSync(wgetCommand)
+        if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
+          console.log(wgetCommand)
+        } else {
+          execSync(wgetCommand)
+        }
       })
     })
     .catch((err: any) => {
