@@ -28,7 +28,7 @@ class GyazoToGoogleDrive {
         downloadedFiles.push(
           {
             itemUrl: item.url,
-            imageId: item.image_id, // ファイル名やメタデータに使う予定だが、不要かもしれない（拡張子が含まれていない）
+            imageId: item.image_id,
             getListedAt: new Date()
           }
         )
@@ -52,6 +52,7 @@ class GyazoToGoogleDrive {
         const downloadedFilename = `${format(DownloadedFile.getListedAt, 'yyyyMMdd_HHmmss')}_${filename}`
         const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
         const downloadedFileRemotePath = DownloadedFile.itemUrl
+
         const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
 
         if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
