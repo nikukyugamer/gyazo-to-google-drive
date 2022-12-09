@@ -5,7 +5,7 @@
     "date-fns": "2.29.3"
   },
   "devDependencies": {
-    "@types/node": "18.11.10",
+    "@types/node": "18.11.12",
     "dotenv": "16.0.3",
     "gyazo-api": "0.3.1",
     "ts-node": "10.9.1",
