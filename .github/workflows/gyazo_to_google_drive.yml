@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['18.x']
+        node-version:
+          - '19.x'
+          - .node-version
     env:
       CI: true
     steps:
