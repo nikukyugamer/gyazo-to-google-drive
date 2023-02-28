@@ -8,9 +8,6 @@ jobs:
   gyazo_to_google_drive:
     name: Gyazo の画像を Google Drive へ
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: ['18.x']
     env:
       CI: true
     steps:
@@ -19,8 +16,9 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: yarn
+        cache-dependency-path: yarn.lock
     - name: Rclone をインストールする
       run: |
         curl https://rclone.org/install.sh | sudo bash
