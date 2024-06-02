@@ -10,5 +10,9 @@
     "gyazo-api": "0.3.1",
     "ts-node": "10.9.2",
     "typescript": "5.4.5"
+  },
+  "scripts": {
+    "download_and_rsync": "ts-node app.ts && yarn rsync",
+    "rsync": "./rsync_with_google_drive.sh"
   }
 }
