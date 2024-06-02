@@ -2,7 +2,26 @@ name: Gyazo の画像を Google Drive にコピーする
 
 on:
   push:
+    branches:
+      - '**'
+    tags-ignore:
+      - 'v*.*.*'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  TZ: Asia/Tokyo
+
+# $ npx @pkgdeps/update-github-actions-permissions ".github/workflows/*.yml"
+permissions:
+  contents: read
 
 jobs:
   gyazo_to_google_drive:
