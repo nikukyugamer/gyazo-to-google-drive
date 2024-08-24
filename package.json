@@ -12,6 +12,7 @@
     "typescript": "5.5.4"
   },
   "scripts": {
+    "download": "ts-node app.ts",
     "download_and_rsync": "ts-node app.ts && yarn rsync",
     "rsync": "./rsync_with_google_drive.sh"
   }
