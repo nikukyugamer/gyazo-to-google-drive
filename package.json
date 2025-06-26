@@ -12,8 +12,8 @@
     "typescript": "5.8.3"
   },
   "scripts": {
-    "download": "ts-node app.ts",
-    "download_and_rsync": "ts-node app.ts && yarn rsync",
+    "download": "node app.ts",
+    "download_and_rsync": "node app.ts && rsync",
     "rsync": "./rsync_with_google_drive.sh"
   }
 }
