@@ -1,5 +1,5 @@
 # Personal script
-rsync_with_google_drive.sh
+rclone_to_google_photos.sh
 
 # Visual Studio Code
 .history/
