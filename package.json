@@ -12,8 +12,8 @@
     "typescript": "5.8.3"
   },
   "scripts": {
-    "download": "node app.ts",
-    "download_and_rsync": "node app.ts && pnpm rsync",
+    "download": "ts-node app.ts",
+    "download_and_rsync": "pnpm download && pnpm rsync",
     "rsync": "./rclone_to_google_photos.sh"
   }
 }

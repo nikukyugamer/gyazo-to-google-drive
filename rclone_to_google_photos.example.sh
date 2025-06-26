@@ -3,6 +3,7 @@ set -euo pipefail
 
 # downloaded_images/ 配下のファイルを削除する
 cd downloaded_images/
+# shellcheck disable=SC2046,SC2012
 if [ $(ls -1 | wc -l) -gt 100 ]; then
   # shellcheck disable=SC2012
   ls -t | tail -n +101 | xargs rm
