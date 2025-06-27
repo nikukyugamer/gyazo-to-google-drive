@@ -13,7 +13,7 @@
   },
   "scripts": {
     "download": "ts-node app.ts",
-    "download_and_rsync": "pnpm download && pnpm rsync",
-    "rsync": "./rclone_to_google_photos.sh"
+    "download_and_rclone": "pnpm download && pnpm rclone",
+    "rclone": "./rclone_to_google_photos.sh"
   }
 }
