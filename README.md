@@ -21,5 +21,5 @@ $ vim rclone_to_google_photos.sh
 - こんな感じ
 
 ```crontab
-00 * * * * cd /path/to/gyazo-to-google-drive && $(which pnpm) download_and_rsync
+00 * * * * cd /path/to/gyazo-to-google-drive && $(which pnpm) download_and_rclone
 ```
