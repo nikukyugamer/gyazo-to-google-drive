@@ -12,6 +12,8 @@ dotenv.config()
 const client = new Gyazo(process.env.GYAZO_ACCESS_TOKEN)
 const { execSync } = require('child_process')
 
+const MAX_PAGES = 100
+
 type DownloadedFile = {
   itemUrl: string
   imageId: string
