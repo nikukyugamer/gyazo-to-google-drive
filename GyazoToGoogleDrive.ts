@@ -41,38 +41,46 @@ class GyazoToGoogleDrive {
         return downloadedFiles
       })
       .then((downloadedFiles: DownloadedFile[]) => {
-        downloadedFiles.forEach((DownloadedFile: DownloadedFile) => {
-          const parsedUrl = url.parse(DownloadedFile.itemUrl)
-          const pathname = parsedUrl.pathname || ''
-          const filename = pathname.split('/').pop()
-          const downloadedDirectory = 'downloaded_images'
+        downloadedFiles.forEach(
+          (DownloadedFile: DownloadedFile, index: number) => {
+            const parsedUrl = url.parse(DownloadedFile.itemUrl)
+            const pathname = parsedUrl.pathname || ''
+            const filename = pathname.split('/').pop()
+            const downloadedDirectory = 'downloaded_images'
 
-          if (
-            this.sameIdFileExistsInDownloadedFileLocalPath(
-              DownloadedFile.imageId,
-              downloadedDirectory
-            )
-          ) {
-            console.log(`${DownloadedFile.imageId} already exists.`)
+            if (
+              this.sameIdFileExistsInDownloadedFileLocalPath(
+                DownloadedFile.imageId,
+                downloadedDirectory
+              )
+            ) {
+              console.log(`${DownloadedFile.imageId} already exists.`)
 
-            return
+              return
+            }
+
+            const downloadedFilename = `${format(
+              DownloadedFile.getListedAt,
+              'yyyyMMdd_HHmmss'
+            )}_${filename}`
+            const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
+            const downloadedFileRemotePath = DownloadedFile.itemUrl
+
+            const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
+
+            if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
+              console.log(wgetCommand)
+            } else {
+              execSync(wgetCommand)
+            }
+
+            // 1秒待つ
+            if (index < downloadedFiles.length - 1) {
+              const sleepSeconds = 1
+              execSync(`sleep ${sleepSeconds}`)
+            }
           }
-
-          const downloadedFilename = `${format(
-            DownloadedFile.getListedAt,
-            'yyyyMMdd_HHmmss'
-          )}_${filename}`
-          const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
-          const downloadedFileRemotePath = DownloadedFile.itemUrl
-
-          const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
-
-          if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
-            console.log(wgetCommand)
-          } else {
-            execSync(wgetCommand)
-          }
-        })
+        )
       })
       .catch((err: any) => {
         console.error({ err })
