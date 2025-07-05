@@ -12,6 +12,8 @@ dotenv.config()
 const client = new Gyazo(process.env.GYAZO_ACCESS_TOKEN)
 const { execSync } = require('child_process')
 
+// TODO: 外部から時間を注入できるようにしたい
+const SLEEP_SECONDS = 2
 const MAX_PAGES = 100
 
 type DownloadedFile = {
@@ -81,19 +83,16 @@ class GyazoToGoogleDrive {
             execSync(wgetCommand)
           }
 
-          // 1秒待つ
+          // ファイルダウンロード間で少し待つ
           if (index < downloadedFiles.length - 1) {
-            const sleepSeconds = 1
-            execSync(`sleep ${sleepSeconds}`)
+            execSync(`sleep ${SLEEP_SECONDS}`)
           }
         }
 
         currentPage++
 
-        // ページ間で少し待つ
         if (hasMoreData) {
-          const sleepSeconds = 1
-          execSync(`sleep ${sleepSeconds}`)
+          execSync(`sleep ${SLEEP_SECONDS}`)
         }
       } catch (err) {
         console.error({ err })
