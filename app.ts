@@ -1,6 +1,5 @@
 import GyazoToGoogleDrive from './GyazoToGoogleDrive'
 
-const parsedPage = parseInt(process.argv[2], 10);
-const startPage = process.argv[2] ? (isNaN(parsedPage) ? 1 : parsedPage) : 1;
+const maxPage = process.argv[2] ? parseInt(process.argv[2], 10) || 100 : 100;
 
-new GyazoToGoogleDrive().main(startPage)
+new GyazoToGoogleDrive().main(maxPage)

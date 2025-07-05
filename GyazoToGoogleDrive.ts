@@ -14,7 +14,7 @@ const { execSync } = require('child_process')
 
 // TODO: 外部から時間を注入できるようにしたい
 const SLEEP_SECONDS = 2
-const MAX_PAGES = 100
+const DEFAULT_MAX_PAGE_NUMBER = 1
 
 type DownloadedFile = {
   itemUrl: string
@@ -29,11 +29,14 @@ class GyazoToGoogleDrive {
   }
 
   // 仕様は https://gyazo.com/api/docs を参照
-  async main(startPage: number = 1, per_page: number = 100) {
-    let currentPage = startPage
+  async main(
+    maxPageNumber: number = DEFAULT_MAX_PAGE_NUMBER,
+    per_page: number = 100
+  ) {
+    let currentPage = 1
     let hasMoreData = true
 
-    while (hasMoreData && currentPage <= MAX_PAGES) {
+    while (hasMoreData && currentPage <= maxPageNumber) {
       try {
         const res = await client.list({ page: currentPage, per_page })
 
