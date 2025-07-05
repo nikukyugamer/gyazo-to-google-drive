@@ -28,7 +28,7 @@ class GyazoToGoogleDrive {
     let currentPage = startPage
     let hasMoreData = true
 
-    while (hasMoreData && currentPage <= 10) {
+    while (hasMoreData && currentPage <= MAX_PAGES) {
       try {
         const res = await client.list({ page: currentPage, per_page })
 
