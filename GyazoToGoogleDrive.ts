@@ -23,6 +23,7 @@ class GyazoToGoogleDrive {
     // TODO: 書く
   }
 
+  // 仕様は https://gyazo.com/api/docs を参照
   main() {
     client
       .list({ page: 1, per_page: 100 })
