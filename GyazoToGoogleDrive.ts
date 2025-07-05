@@ -118,10 +118,10 @@ class GyazoToGoogleDrive {
     imageId: string,
     downloadedDirectory: string
   ) {
-    const files = fs.readdirSync(downloadedDirectory)
+    const fileNames = fs.readdirSync(downloadedDirectory)
 
-    for (const file of files) {
-      if (file.includes(imageId)) {
+    for (const fileName of fileNames) {
+      if (fileName.includes(imageId)) {
         return true
       }
     }
