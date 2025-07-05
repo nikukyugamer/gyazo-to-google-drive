@@ -19,6 +19,7 @@ const MAX_PAGES = 100
 type DownloadedFile = {
   itemUrl: string
   imageId: string
+  createdAt: string
   getListedAt: Date
 }
 
@@ -44,9 +45,11 @@ class GyazoToGoogleDrive {
         const downloadedFiles: DownloadedFile[] = []
 
         res.data.forEach((item: any) => {
+          // この時点ではダウンロードしていないからこの命名はあまりよくない
           downloadedFiles.push({
             itemUrl: item.url,
             imageId: item.image_id,
+            createdAt: item.created_at,
             getListedAt: new Date(),
           })
         })
@@ -68,9 +71,8 @@ class GyazoToGoogleDrive {
             continue
           }
 
-          const downloadedFilename = `${format(
-            DownloadedFile.getListedAt,
-            'yyyyMMdd_HHmmss'
+          const downloadedFilename = `${this.convertCreatedAtToFilenameDatetime(
+            DownloadedFile.createdAt
           )}_${filename}`
           const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
           const downloadedFileRemotePath = DownloadedFile.itemUrl
@@ -114,6 +116,20 @@ class GyazoToGoogleDrive {
     }
 
     return false
+  }
+
+  convertCreatedAtToFilenameDatetime(createdAt: string): string {
+    const date = new Date(createdAt.replace(' ', 'T'))
+    const zeroPadding = (num: number) => num.toString().padStart(2, '0')
+
+    const yyyymmdd = `${date.getFullYear()}${zeroPadding(
+      date.getMonth() + 1
+    )}${zeroPadding(date.getDate())}`
+    const hhmmss = `${zeroPadding(date.getHours())}${zeroPadding(
+      date.getMinutes()
+    )}${zeroPadding(date.getSeconds())}`
+
+    return `${yyyymmdd}_${hhmmss}`
   }
 
   printList({ page, per_page }: { page: number; per_page: number }) {
