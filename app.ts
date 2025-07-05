@@ -1,3 +1,5 @@
 import GyazoToGoogleDrive from './GyazoToGoogleDrive'
 
-new GyazoToGoogleDrive().main()
+const startPage = process.argv[2] ? parseInt(process.argv[2], 10) : 1
+
+new GyazoToGoogleDrive().main(startPage)

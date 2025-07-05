@@ -24,10 +24,19 @@ class GyazoToGoogleDrive {
   }
 
   // 仕様は https://gyazo.com/api/docs を参照
-  main() {
-    client
-      .list({ page: 1, per_page: 100 })
-      .then((res: any) => {
+  async main(startPage: number = 1, per_page: number = 100) {
+    let currentPage = startPage
+    let hasMoreData = true
+
+    while (hasMoreData && currentPage <= 10) {
+      try {
+        const res = await client.list({ page: currentPage, per_page })
+
+        if (!res.data || res.data.length === 0) {
+          hasMoreData = false
+          break
+        }
+
         const downloadedFiles: DownloadedFile[] = []
 
         res.data.forEach((item: any) => {
@@ -38,53 +47,57 @@ class GyazoToGoogleDrive {
           })
         })
 
-        return downloadedFiles
-      })
-      .then((downloadedFiles: DownloadedFile[]) => {
-        downloadedFiles.forEach(
-          (DownloadedFile: DownloadedFile, index: number) => {
-            const parsedUrl = url.parse(DownloadedFile.itemUrl)
-            const pathname = parsedUrl.pathname || ''
-            const filename = pathname.split('/').pop()
-            const downloadedDirectory = 'downloaded_images'
+        for (let index = 0; index < downloadedFiles.length; index++) {
+          const DownloadedFile = downloadedFiles[index]
+          const parsedUrl = url.parse(DownloadedFile.itemUrl)
+          const pathname = parsedUrl.pathname || ''
+          const filename = pathname.split('/').pop()
+          const downloadedDirectory = 'downloaded_images'
 
-            if (
-              this.sameIdFileExistsInDownloadedFileLocalPath(
-                DownloadedFile.imageId,
-                downloadedDirectory
-              )
-            ) {
-              console.log(`${DownloadedFile.imageId} already exists.`)
-
-              return
-            }
-
-            const downloadedFilename = `${format(
-              DownloadedFile.getListedAt,
-              'yyyyMMdd_HHmmss'
-            )}_${filename}`
-            const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
-            const downloadedFileRemotePath = DownloadedFile.itemUrl
-
-            const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
-
-            if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
-              console.log(wgetCommand)
-            } else {
-              execSync(wgetCommand)
-            }
-
-            // 1秒待つ
-            if (index < downloadedFiles.length - 1) {
-              const sleepSeconds = 1
-              execSync(`sleep ${sleepSeconds}`)
-            }
+          if (
+            this.sameIdFileExistsInDownloadedFileLocalPath(
+              DownloadedFile.imageId,
+              downloadedDirectory
+            )
+          ) {
+            console.log(`${DownloadedFile.imageId} already exists.`)
+            continue
           }
-        )
-      })
-      .catch((err: any) => {
+
+          const downloadedFilename = `${format(
+            DownloadedFile.getListedAt,
+            'yyyyMMdd_HHmmss'
+          )}_${filename}`
+          const downloadedFileLocalPath = `${downloadedDirectory}/${downloadedFilename}`
+          const downloadedFileRemotePath = DownloadedFile.itemUrl
+
+          const wgetCommand = `wget -c -O ${downloadedFileLocalPath} ${downloadedFileRemotePath}`
+
+          if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
+            console.log(wgetCommand)
+          } else {
+            execSync(wgetCommand)
+          }
+
+          // 1秒待つ
+          if (index < downloadedFiles.length - 1) {
+            const sleepSeconds = 1
+            execSync(`sleep ${sleepSeconds}`)
+          }
+        }
+
+        currentPage++
+
+        // ページ間で少し待つ
+        if (hasMoreData) {
+          const sleepSeconds = 1
+          execSync(`sleep ${sleepSeconds}`)
+        }
+      } catch (err) {
         console.error({ err })
-      })
+        hasMoreData = false
+      }
+    }
   }
 
   sameIdFileExistsInDownloadedFileLocalPath(
