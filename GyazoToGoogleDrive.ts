@@ -85,7 +85,15 @@ class GyazoToGoogleDrive {
           if (process.env.NOT_EXECUTE_WGET_COMMAND === 'true') {
             console.log(wgetCommand)
           } else {
-            execSync(wgetCommand)
+            try {
+              execSync(wgetCommand)
+            } catch (error) {
+              console.error(
+                `image_id: ${DownloadedFile.imageId} のダウンロードに失敗しました。`,
+                error
+              )
+              continue
+            }
           }
 
           // ファイルダウンロード間で少し待つ
