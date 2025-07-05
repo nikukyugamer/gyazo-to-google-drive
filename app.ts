@@ -1,5 +1,5 @@
 import GyazoToGoogleDrive from './GyazoToGoogleDrive'
 
-const maxPage = process.argv[2] ? parseInt(process.argv[2], 10) || 100 : 100;
+const maxPageNumber = process.argv[2] ? parseInt(process.argv[2], 10) || 1 : 1
 
-new GyazoToGoogleDrive().main(maxPage)
+new GyazoToGoogleDrive().main(maxPageNumber)
