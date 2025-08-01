@@ -9,7 +9,7 @@
     "dotenv": "17.2.1",
     "gyazo-api": "0.3.1",
     "ts-node": "10.9.2",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "scripts": {
     "download": "ts-node app.ts",
