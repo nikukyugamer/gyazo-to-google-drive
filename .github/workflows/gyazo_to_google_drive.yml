@@ -39,7 +39,7 @@ jobs:
       with:
         # TODO: ここのバージョンを動的に取得したい
         # https://github.com/pnpm/pnpm/releases
-        version: 11.13.1
+        version: 11.14.0
     - name: Node.js のセットアップを行う
       # https://github.com/actions/setup-node
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
